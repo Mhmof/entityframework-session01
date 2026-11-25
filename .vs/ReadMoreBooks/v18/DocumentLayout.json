@@ -1,0 +1,49 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\mhmod\\.gemini\\antigravity\\scratch\\ReadMoreBooks\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{CC6E15FB-0530-4CBB-8149-14E6D23E5DAB}|ReadMoreBooks\\ReadMoreBooks.csproj|c:\\users\\mhmod\\.gemini\\antigravity\\scratch\\readmorebooks\\readmorebooks\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC6E15FB-0530-4CBB-8149-14E6D23E5DAB}|ReadMoreBooks\\ReadMoreBooks.csproj|solutionrelative:readmorebooks\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\mhmod\\.gemini\\antigravity\\scratch\\ReadMoreBooks\\ReadMoreBooks\\Program.cs",
+              "RelativeDocumentMoniker": "ReadMoreBooks\\Program.cs",
+              "ToolTip": "C:\\Users\\mhmod\\.gemini\\antigravity\\scratch\\ReadMoreBooks\\ReadMoreBooks\\Program.cs",
+              "RelativeToolTip": "ReadMoreBooks\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-25T19:08:41.88Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1a7f2c3-8d4b-42e6-9f75-2a3b6c8e9d40}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

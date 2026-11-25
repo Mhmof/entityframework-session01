@@ -1,0 +1,139 @@
+﻿using Microsoft.EntityFrameworkCore;
+using ReadMoreBooks.Data;
+using ReadMoreBooks.Models;
+
+namespace ReadMoreBooks
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            using var context = new BookstoreContext();
+
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
+            var category = new Category
+            {
+                Name = "Programming",
+                Description = "Books about software development and databases",
+                IsActive = true
+            };
+
+            var author = new Author
+            {
+                FirstName = "Ahmed",
+                LastName = "Hassan",
+                Email = "ahmed.hassan@email.com",
+                Biography = "Software engineer and technical writer.",
+                DateOfBirth = new DateTime(1988, 5, 14)
+            };
+
+            var book = new Book
+            {
+                Title = "Learning EF Core",
+                ISBN = "978-1-23456-789-0",
+                Price = 249.50m,
+                NumberOfPages = 320,
+                PublishedYear = 2024,
+                IsInStock = true,
+                Author = author,
+                Category = category
+            };
+
+            context.Books.Add(book);
+            context.SaveChanges();
+
+            Console.WriteLine("Database created and sample data saved.");
+            Console.WriteLine();
+
+            var books = context.Books
+                .Include(b => b.Author)
+                .Include(b => b.Category)
+                .ToList();
+
+            Console.WriteLine("--- Saved Books ---");
+            foreach (var b in books)
+            {
+                Console.WriteLine($"Code: {b.BookCode} | Title: {b.Title} | ISBN: {b.ISBN} | Price: {b.Price} | Pages: {b.NumberOfPages} | Year: {b.PublishedYear} | In Stock: {b.IsInStock}");
+                Console.WriteLine($"Author: {b.Author.FullName} ({b.Author.Email}) | BirthDate: {b.Author.DateOfBirth:yyyy-MM-dd}");
+                Console.WriteLine($"Category: {b.Category.Name} | Active: {b.Category.IsActive}");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("--- Database Schema Check ---");
+
+            var connection = context.Database.GetDbConnection();
+            connection.Open();
+
+            using var command = connection.CreateCommand();
+            command.CommandText = @"
+                SELECT 
+                    TABLE_NAME,
+                    COLUMN_NAME,
+                    DATA_TYPE,
+                    CHARACTER_MAXIMUM_LENGTH,
+                    NUMERIC_PRECISION,
+                    NUMERIC_SCALE,
+                    IS_NULLABLE
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_NAME IN ('BooksInventory', 'Authors', 'BookCategories')
+                ORDER BY TABLE_NAME, ORDINAL_POSITION";
+
+            using var reader = command.ExecuteReader();
+            string currentTable = "";
+
+            while (reader.Read())
+            {
+                string tableName = reader.GetString(0);
+                if (tableName != currentTable)
+                {
+                    currentTable = tableName;
+                    Console.WriteLine();
+                    Console.WriteLine($"Table: {currentTable}");
+                }
+
+                string colName = reader.GetString(1);
+                string dataType = reader.GetString(2);
+                string maxLen = reader.IsDBNull(3) ? "-" : reader.GetInt32(3).ToString();
+                string precision = reader.IsDBNull(4) ? "-" : reader.GetByte(4).ToString();
+                string scale = reader.IsDBNull(5) ? "-" : reader.GetInt32(5).ToString();
+                string nullable = reader.GetString(6);
+
+                string typeInfo = dataType;
+                if (dataType == "nvarchar" || dataType == "varchar")
+                {
+                    typeInfo = $"{dataType}({maxLen})";
+                }
+                else if (dataType == "decimal" || dataType == "numeric")
+                {
+                    typeInfo = $"{dataType}({precision},{scale})";
+                }
+
+                Console.WriteLine($"  {colName,-18} | {typeInfo,-18} | Nullable: {nullable}");
+            }
+
+            reader.Close();
+
+            Console.WriteLine();
+            Console.WriteLine("--- Primary Keys Check ---");
+
+            command.CommandText = @"
+                SELECT k.TABLE_NAME, k.COLUMN_NAME
+                FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS t
+                JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE k
+                    ON t.CONSTRAINT_NAME = k.CONSTRAINT_NAME
+                WHERE t.CONSTRAINT_TYPE = 'PRIMARY KEY'
+                  AND k.TABLE_NAME IN ('BooksInventory', 'Authors', 'BookCategories')
+                ORDER BY k.TABLE_NAME";
+
+            using var pkReader = command.ExecuteReader();
+            while (pkReader.Read())
+            {
+                Console.WriteLine($"  {pkReader.GetString(0),-18} -> PK: {pkReader.GetString(1)}");
+            }
+
+            connection.Close();
+        }
+    }
+}
